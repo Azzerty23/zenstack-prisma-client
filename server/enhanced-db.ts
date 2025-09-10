@@ -1,12 +1,11 @@
-import { enhance } from '@zenstackhq/runtime';
-import type { GetServerSidePropsContext } from 'next';
-import { getServerAuthSession } from './auth';
-import { prisma } from './db';
+import { getEnhancedPrisma } from "@lib/db";
+import type { GetServerSidePropsContext } from "next";
+import { getServerAuthSession } from "./auth";
 
-export async function getEnhancedPrisma(ctx: {
-    req: GetServerSidePropsContext['req'];
-    res: GetServerSidePropsContext['res'];
+export async function getEnhancedPrismaFromCtx(ctx: {
+	req: GetServerSidePropsContext["req"];
+	res: GetServerSidePropsContext["res"];
 }) {
-    const session = await getServerAuthSession(ctx);
-    return enhance(prisma, { user: session?.user });
+	const session = await getServerAuthSession(ctx);
+	return getEnhancedPrisma(session?.user ?? undefined);
 }

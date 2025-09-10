@@ -5,3 +5,4 @@ node_modules/
 .next
 .zenstack_repl_history
 .idea
+generated

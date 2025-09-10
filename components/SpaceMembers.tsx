@@ -1,66 +1,72 @@
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { useCurrentSpace } from '@lib/context';
-import { useFindManySpaceUser } from '@lib/hooks';
-import { Space } from '@prisma/client';
-import Avatar from './Avatar';
-import ManageMembers from './ManageMembers';
+import type { SpaceModel } from "@generated/zenstack/models";
 
-function ManagementDialog(space?: Space) {
-    if (!space) return undefined;
-    return (
-        <>
-            <label htmlFor="management-modal" className="modal-button">
-                <PlusIcon className="w-6 h-6 text-gray-500 cursor-pointer mr-1" />
-            </label>
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { useCurrentSpace } from "@lib/context";
+import { useFindManySpaceUser } from "@lib/hooks";
+import Avatar from "./Avatar";
+import ManageMembers from "./ManageMembers";
 
-            <input type="checkbox" id="management-modal" className="modal-toggle" />
-            <div className="modal">
-                <div className="modal-box">
-                    <h3 className="font-bold text-base md:text-lg">Manage Members of {space.name}</h3>
+function ManagementDialog(space?: SpaceModel) {
+	if (!space) return undefined;
+	return (
+		<>
+			<label htmlFor="management-modal" className="modal-button">
+				<PlusIcon className="w-6 h-6 text-gray-500 cursor-pointer mr-1" />
+			</label>
 
-                    <div className="p-4 mt-4">
-                        <ManageMembers space={space} />
-                    </div>
+			<input type="checkbox" id="management-modal" className="modal-toggle" />
+			<div className="modal">
+				<div className="modal-box">
+					<h3 className="font-bold text-base md:text-lg">
+						Manage Members of {space.name}
+					</h3>
 
-                    <div className="modal-action">
-                        <label htmlFor="management-modal" className="btn btn-outline">
-                            Close
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </>
-    );
+					<div className="p-4 mt-4">
+						<ManageMembers space={space} />
+					</div>
+
+					<div className="modal-action">
+						<label htmlFor="management-modal" className="btn btn-outline">
+							Close
+						</label>
+					</div>
+				</div>
+			</div>
+		</>
+	);
 }
 
 export default function SpaceMembers() {
-    const space = useCurrentSpace();
+	const space = useCurrentSpace();
 
-    const { data: members } = useFindManySpaceUser(
-        {
-            where: {
-                spaceId: space?.id,
-            },
-            include: {
-                user: true,
-            },
-            orderBy: {
-                role: 'desc',
-            },
-        },
-        { disabled: !space }
-    );
+	const { data: members } = useFindManySpaceUser(
+		{
+			where: {
+				spaceId: space?.id,
+			},
+			include: {
+				user: true,
+			},
+			orderBy: {
+				role: "desc",
+			},
+		},
+		{ disabled: !space },
+	);
 
-    return (
-        <div className="flex items-center">
-            {ManagementDialog(space)}
-            {members && (
-                <label className="mr-1 modal-button cursor-pointer" htmlFor="management-modal">
-                    {members?.map((member) => (
-                        <Avatar key={member.id} user={member.user} size={24} />
-                    ))}
-                </label>
-            )}
-        </div>
-    );
+	return (
+		<div className="flex items-center">
+			{ManagementDialog(space)}
+			{members && (
+				<label
+					className="mr-1 modal-button cursor-pointer"
+					htmlFor="management-modal"
+				>
+					{members?.map((member) => (
+						<Avatar key={member.id} user={member.user} size={24} />
+					))}
+				</label>
+			)}
+		</div>
+	);
 }

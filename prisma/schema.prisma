@@ -8,8 +8,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-generator js {
-  provider = "prisma-client-js"
+generator client {
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
+  previewFeatures = ["driverAdapters", "queryCompiler"]
+  runtime         = "nodejs"
 }
 
 enum SpaceUserRole {
